@@ -23,7 +23,7 @@ class Uri implements IUri, IGetParamArrUri
     private $action;
     private $param     = array();
     private $initParam = array('Index', 'index');
-    
+
     private static $instance = NULL;
 
 
@@ -93,10 +93,11 @@ class Uri implements IUri, IGetParamArrUri
 
     private function getUriArr()
     {
-        $isUri        = array_key_exists('uri', $_GET);
-        $convertToArr = explode('/', rtrim($_GET['uri'], '/'));
+        $isUri = array_key_exists('uri', $_GET);
 
-        return (!$isUri) ? $this->initParam : $convertToArr;
+        return (!$isUri) 
+            ? $this->initParam 
+            : explode('/', rtrim($_GET['uri'], '/'));
     } 
 
 
