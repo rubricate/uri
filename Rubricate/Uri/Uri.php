@@ -66,7 +66,6 @@ class Uri implements IUri, IGetParamArrUri
         $this->controller = self::getfilter($controller);
 
         unset($uri[0], $uri[1]);
-        sort($uri);
 
         $this->param = $uri;
 
