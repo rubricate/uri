@@ -28,14 +28,10 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
-
     protected function __construct()
     {
         self::init();
     }
-
-
-
 
 
 
@@ -51,8 +47,6 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
-
-
     private function init()
     {
         $this->alnumPreserve = new AlnumUnderscoreHyphenPreserveFilter();
@@ -62,8 +56,8 @@ class Uri implements IUri, IGetParamArrUri
         $controller = ucfirst($uri[0]);
         $action     = (!$isAction)? $this->initParam[1]: lcfirst($uri[1]);
 
-        $this->action     = self::getFilter($action);
-        $this->controller = self::getfilter($controller);
+        $this->action     = self::getActionFilter($action);
+        $this->controller = self::getControllerFilter($controller);
 
         unset($uri[0], $uri[1]);
 
@@ -74,11 +68,7 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
-
-
-
-
-    private function getFilter($value) 
+    private function getActionFilter($value) 
     {
         $value = str_replace('-', '_', $value);
         return $this->alnumPreserve->getFilter($value);
@@ -86,6 +76,21 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
+
+    private function getControllerFilter($value) 
+    {
+        $value = self::getActionFilter($value);
+
+        $word   = array();
+        $word   = explode('_', $value);
+        $count  = count($word);
+        for ($i = 0; $i < $count; ++$i)
+        {
+            $word[$i] = ucfirst($word[$i]);
+        }
+        return implode('_', $word);
+
+    }
 
 
 
@@ -102,10 +107,6 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
-
-
-
-
     public function getController()
     {
         return $this->controller;
@@ -114,16 +115,10 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
-
-
-
-
     public function getAction()
     {
         return $this->action;
     } 
-
-
 
 
 
@@ -137,16 +132,10 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
-
-
-
     public function getParamArr()
     {
         return (!count($this->param)) ? array(): $this->param;
     } 
-
-
-
 
 
 
