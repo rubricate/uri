@@ -24,7 +24,7 @@ class Uri implements IUri, IGetParamArrUri
     private $param     = array();
     private $initParam = array('Index', 'index');
 
-    private static $instance = NULL;
+    private static $instance = null;
 
 
 
@@ -37,8 +37,7 @@ class Uri implements IUri, IGetParamArrUri
 
     public static function getInstance()
     {
-        if(self::$instance == NULL)
-        {
+        if(self::$instance == null) {
             self::$instance = new Uri();
         }
 
@@ -126,7 +125,7 @@ class Uri implements IUri, IGetParamArrUri
     public function getParam($num)
     { 
         $isParam = (array_key_exists($num, $this->param));
-        return (!$isParam) ? NULL: $this->param[$num];
+        return (!$isParam) ? null: $this->param[$num];
     } 
 
 
@@ -139,8 +138,12 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
-    private function __clone() { } 
-    private function __wakeup() { } 
+    private function __clone() 
+    { 
+    } 
+    private function __wakeup() 
+    { 
+    } 
 
 
 
