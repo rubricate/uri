@@ -4,7 +4,7 @@
  * @package     RubricatePHP
  * @author      Estefanio NS <estefanions AT gmail DOT com>
  * @link        http://rubricate.github.io
- * @copyright   2016 - 2017
+ * @copyright   2016 - 2018
  * 
  */
 
@@ -14,7 +14,7 @@ namespace Rubricate\Uri;
 
 use Rubricate\Filter\Preserve\AlnumUnderscoreHyphenPreserveFilter;
 
-class Uri implements IUri, IGetParamArrUri
+class Uri implements IUri
 {
 
     private $alnumPreserve;
@@ -24,25 +24,13 @@ class Uri implements IUri, IGetParamArrUri
     private $param     = array();
     private $initParam = array('Index', 'index');
 
-    private static $instance = null;
 
 
-
-    protected function __construct()
+    public function __construct()
     {
         self::init();
     }
 
-
-
-    public static function getInstance()
-    {
-        if(self::$instance == null) {
-            self::$instance = new Uri();
-        }
-
-        return self::$instance;
-    } 
 
 
 
@@ -55,19 +43,19 @@ class Uri implements IUri, IGetParamArrUri
         $controller = ucfirst($uri[0]);
         $action     = (!$isAction)? $this->initParam[1]: lcfirst($uri[1]);
 
-        $this->action     = self::getActionFilter($action);
-        $this->controller = self::getControllerFilter($controller);
+        $this->action     = self::getFilter($action);
+        $this->controller = self::getfilter($controller);
 
         unset($uri[0], $uri[1]);
+        sort($uri);
 
         $this->param = $uri;
-
-
     } 
 
 
 
-    private function getActionFilter($value) 
+
+    private function getFilter($value) 
     {
         $value = str_replace('-', '_', $value);
         return $this->alnumPreserve->getFilter($value);
@@ -76,31 +64,12 @@ class Uri implements IUri, IGetParamArrUri
 
 
 
-    private function getControllerFilter($value) 
-    {
-        $value = self::getActionFilter($value);
-
-        $word   = array();
-        $word   = explode('_', $value);
-        $count  = count($word);
-        for ($i = 0; $i < $count; ++$i)
-        {
-            $word[$i] = ucfirst($word[$i]);
-        }
-        return implode('_', $word);
-
-    }
-
-
-
-
     private function getUriArr()
     {
-        $isUri = array_key_exists('uri', $_GET);
+        $i = array_key_exists('uri', $_GET);
+        $p = $this->initParam;
 
-        return (!$isUri) 
-            ? $this->initParam 
-            : explode('/', rtrim($_GET['uri'], '/'));
+        return (!$i)? $p: explode('/', rtrim($_GET['uri'], '/'));
     } 
 
 
@@ -125,6 +94,7 @@ class Uri implements IUri, IGetParamArrUri
     public function getParam($num)
     { 
         $isParam = (array_key_exists($num, $this->param));
+
         return (!$isParam) ? null: $this->param[$num];
     } 
 
@@ -133,18 +103,29 @@ class Uri implements IUri, IGetParamArrUri
 
     public function getParamArr()
     {
-        return (!count($this->param)) ? array(): $this->param;
+        $isParam = (count($this->param) > 0);
+
+        return (!$isParam) ? array(): $this->param;
     } 
 
 
 
-    private function __clone() 
-    { 
+
+    public function getNamespaceAndController()
+    {
+        $namespace     = array();
+        $controllerArr = explode('_', self::getController());
+
+        foreach ($controllerArr as $ns) {
+
+            $namespace[] = ucfirst($ns);
+        }
+
+        return implode('\\', $namespace);
     } 
-    private function __wakeup() 
-    { 
-    } 
+
 
 
 
 }
+
