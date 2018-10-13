@@ -47,7 +47,6 @@ class Uri implements IUri
         $this->controller = self::getfilter($controller);
 
         unset($uri[0], $uri[1]);
-        sort($uri);
 
         $this->param = $uri;
     } 
