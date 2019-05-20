@@ -4,7 +4,7 @@
  * @package     RubricatePHP
  * @author      Estefanio NS <estefanions AT gmail DOT com>
  * @link        http://rubricate.github.io
- * @copyright   2016 - 2018
+ * @copyright   2016 - 2019
  * 
  */
 
@@ -14,7 +14,7 @@ namespace Rubricate\Uri;
 
 use Rubricate\Filter\Preserve\AlnumUnderscoreHyphenPreserveFilter;
 
-class Uri implements IUri
+class Uri
 {
 
     private $alnumPreserve;
@@ -65,10 +65,11 @@ class Uri implements IUri
 
     private function getUriArr()
     {
-        $i = array_key_exists('uri', $_GET);
+        $q = $_SERVER['QUERY_STRING'] ;
+        $i = ( !empty($q) );
         $p = $this->initParam;
 
-        return (!$i)? $p: explode('/', rtrim($_GET['uri'], '/'));
+        return (!$i)? $p: explode('/', trim($q, '/'));
     } 
 
 
