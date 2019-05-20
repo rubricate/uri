@@ -9,6 +9,6 @@ $ composer require rubricate/uri
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?uri=$1
+RewriteRule ^(.+)$ index.php?/$1 [L]
 ```
 
