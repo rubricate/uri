@@ -69,7 +69,7 @@ class IdentifyUri
     private function getUriArr($route)
     {
         $rt = $route->getRoute();
-        $qs = (!is_null($rt))? $rt: $route->getQueryStr();
+        $qs = (!is_null($rt))? $rt: QrStrUri::get();
         $pr = $this->initParam;
         $ex = explode('/', $qs);
 
@@ -132,5 +132,4 @@ class IdentifyUri
 
 
 }
-
 
