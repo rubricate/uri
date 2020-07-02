@@ -14,7 +14,7 @@ namespace Rubricate\Uri;
 
 use Rubricate\Filter\Preserve\AlnumUnderscoreHyphenPreserveFilter;
 
-class Uri
+class Uri implements IUri
 {
 
     private $alnumPreserve;
