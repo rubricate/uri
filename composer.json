@@ -1,6 +1,7 @@
 {
 
     "name": "rubricate/uri",
+    "description": "Assists in retrieving information from a friendly URL URI strings",
     "license": "MIT",
     "authors": [
         {
