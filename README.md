@@ -12,3 +12,5 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.+)$ index.php?/$1 [L]
 ```
 
+- Documentation is at https://rubricate.github.io/components/uri
+
