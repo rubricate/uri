@@ -1,20 +1,17 @@
 <?php 
 
 /*
- * @package     RubricatePHP
- * @author      Estefanio NS <estefanions AT gmail DOT com>
- * @link        http://rubricate.github.io
- * @copyright   2016 - 2019
- * 
+ * Class Rubricate Uri
+ *
+ * @package     rubricate/uri
+ * @link        https://rubricate.github.io/components/uri
  */
-
-
 
 namespace Rubricate\Uri;
 
 use Rubricate\Filter\Preserve\AlnumUnderscoreHyphenPreserveFilter;
 
-class IdentifyUri
+class CoreUri implements IUri
 {
 
     private $alnumPreserve;
@@ -26,25 +23,30 @@ class IdentifyUri
 
 
 
-    public function __construct(IRouterUri $route)
-    {
-        self::init($route);
-    }
-
-
-
-
-    private function init($route)
+    public function __construct($routes = [])
     {
         $this->alnumPreserve = new AlnumUnderscoreHyphenPreserveFilter();
 
-        $uri        = self::getUriArr($route);
+        self::setRoute($routes);
+        self::init();
+    }
+
+    private function setRoute($r)
+    {
+        $q = $_SERVER['QUERY_STRING'] ;
+        $router = new RouterUri($r, $q);
+
+        $this->q = $router->getStr();
+    } 
 
 
+    private function init()
+    {
+
+        $uri        = self::getArr();
         $isAction   = (array_key_exists(1, $uri));
         $controller = ucfirst($uri[0]);
-        $default    = $this->initParam[1];
-        $action     = (!$isAction)? $default: lcfirst($uri[1]);
+        $action     = (!$isAction)? $this->initParam[1]: lcfirst($uri[1]);
 
         $this->action     = self::getFilter($action);
         $this->controller = self::getfilter($controller);
@@ -56,7 +58,6 @@ class IdentifyUri
 
 
 
-
     private function getFilter($value) 
     {
         $value = str_replace('-', '_', $value);
@@ -65,17 +66,20 @@ class IdentifyUri
 
 
 
-
-    private function getUriArr($route)
+    public function getArr()
     {
-        $rt = $route->getRoute();
-        $qs = (!is_null($rt))? $rt: QrStrUri::get();
-        $pr = $this->initParam;
-        $ex = explode('/', $qs);
+        $i = ( !empty($this->q) );
+        $p = $this->initParam;
 
-        return (!empty($qs))? $ex: $pr;
+        return (!$i)? $p: explode('/', trim($this->q, '/'));
     } 
 
+
+
+    public function getStr()
+    {
+       return implode('/', self::getArr());
+    } 
 
 
 
@@ -86,12 +90,10 @@ class IdentifyUri
 
 
 
-
     public function getAction()
     {
         return $this->action;
     } 
-
 
 
 
@@ -104,14 +106,12 @@ class IdentifyUri
 
 
 
-
     public function getParamArr()
     {
         $isParam = (count($this->param) > 0);
 
         return (!$isParam) ? array(): $this->param;
     } 
-
 
 
 
@@ -127,8 +127,6 @@ class IdentifyUri
 
         return implode('\\', $namespace);
     } 
-
-
 
 
 }

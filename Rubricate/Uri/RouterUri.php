@@ -1,50 +1,81 @@
 <?php
 
+/*
+ * Class Rubricate Uri
+ *
+ * @package     rubricate/uri
+ * @link        https://rubricate.github.io/components/uri
+ */
+
 namespace Rubricate\Uri;
 
-class RouterUri extends AbstractRouterUri implements IRouterUri
+class RouterUri implements IGetStrUri
 {
-    private $routeArr = [];
+    private $routes = [];
+    private $uri;
 
 
-    public function addRoute($pattern, $callback) {
 
-        parent::addRoute($pattern, $callback);
-
-        return $this;
+    public function __construct($routes = [], $queryString = null)
+    {
+        self::init($routes, $queryString);
     }
 
 
 
-    public function getRoute()
+    public function init($rt, $qr)
     {
-        if (parent::isRoute()) {
+        self::setRouteAndQrStr($rt, $qr);
 
-            $_GET['q'] = QrStrUri::get();
-            $q = $_GET['q'];
+        foreach ($this->routes as $urik => $uriv) {
 
+            $pattern = preg_replace('(\{[a-z0-9]{1,}\})', '([a-z0-9-]{1,})', $urik);
 
-            foreach (parent::getRouteArr() as $pattern => $callback) {
+            if(preg_match(sprintf('#^(%s)*$#i', $pattern), $this->uri, $matches) === 1){
+                array_shift($matches);
+                array_shift($matches);
 
-                if (preg_match($pattern, $q, $params)) {
+                $item = [];
 
-                    unset($q);
+                if(preg_match_all('(\{[a-z0-9]{1,}\})', $urik, $m)){
+                    $item = preg_replace('(\{|\})', '', $m[0]);
 
-                    array_shift($params);
+                    $arg = [];
+                    foreach ($matches as $key => $match) {
+                        $arg[$item[$key]] = $match;
+                    }
 
-                    $c = $callback;
-                    $p = array_values($params);
-
-                    return call_user_func_array($c, $p);
-
+                    foreach ($arg as $ak => $av) {
+                        $uriv = str_replace(':' . $ak, $av, $uriv);
+                    }
                 }
 
+                $this->uri = $uriv;
+                break;
+
             }
-
         }
+    }
 
-        return null;
-    } 
+
+
+    public function getStr()
+    {
+        return $this->uri;
+    }
+
+
+
+    private function setRouteAndQrStr($rt, $qr)
+    {
+        $q = $qr;
+        $s = $_SERVER['QUERY_STRING'] ;
+        $u = (is_null($q)) ? $s: $q;
+
+        $this->uri = (!empty($u))? $u: '/';
+        $this->routes = $rt;
+    }
+
 
 }    
 

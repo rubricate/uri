@@ -1,11 +1,10 @@
 <?php 
 
 /*
- * @package     RubricatePHP
- * @author      Estefanio NS <estefanions AT gmail DOT com>
- * @link        http://rubricate.github.io
- * @copyright   2017
- * 
+ * Class Rubricate Uri
+ *
+ * @package     rubricate/uri
+ * @link        https://rubricate.github.io/components/uri
  */
 
 namespace Rubricate\Uri;
@@ -15,5 +14,4 @@ interface IGetActionUri
 {
     public function getAction();
 }
-
 
