@@ -1,12 +1,5 @@
 <?php
 
-/*
- * Class Rubricate Uri
- *
- * @package     rubricate/uri
- * @link        https://rubricate.github.io/components/uri
- */
-
 namespace Rubricate\Uri;
 
 class RouterUri implements IGetStrUri
@@ -14,14 +7,10 @@ class RouterUri implements IGetStrUri
     private $routes = [];
     private $uri;
 
-
-
     public function __construct($routes = [], $queryString = null)
     {
         self::init($routes, $queryString);
     }
-
-
 
     public function init($rt, $qr)
     {
@@ -57,14 +46,10 @@ class RouterUri implements IGetStrUri
         }
     }
 
-
-
     public function getStr()
     {
         return $this->uri;
     }
-
-
 
     private function setRouteAndQrStr($rt, $qr)
     {
@@ -75,7 +60,5 @@ class RouterUri implements IGetStrUri
         $this->uri = (!empty($u))? $u: 'index/index';
         $this->routes = $rt;
     }
-
-
 }    
 

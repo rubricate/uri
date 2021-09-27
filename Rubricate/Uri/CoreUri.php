@@ -1,27 +1,17 @@
 <?php 
 
-/*
- * Class Rubricate Uri
- *
- * @package     rubricate/uri
- * @link        https://rubricate.github.io/components/uri
- */
-
 namespace Rubricate\Uri;
 
 use Rubricate\Filter\Preserve\AlnumUnderscoreHyphenPreserveFilter;
 
 class CoreUri implements IUri
 {
-
     private $alnumPreserve;
     private $str;
     private $controller;
     private $action;
     private $param     = array();
     private $initParam = array('Index', 'index');
-
-
 
     public function __construct($routes = [])
     {
@@ -39,10 +29,8 @@ class CoreUri implements IUri
         $this->q = $router->getStr();
     } 
 
-
     private function init()
     {
-
         $uri        = self::getArr();
         $isAction   = (array_key_exists(1, $uri));
         $controller = ucfirst($uri[0]);
@@ -56,15 +44,11 @@ class CoreUri implements IUri
         $this->param = $uri;
     } 
 
-
-
     private function getFilter($value) 
     {
         $value = str_replace('-', '_', $value);
         return $this->alnumPreserve->getFilter($value);
     }
-
-
 
     public function getArr()
     {
@@ -74,28 +58,20 @@ class CoreUri implements IUri
         return (!$i)? $p: explode('/', trim($this->q, '/'));
     } 
 
-
-
     public function getStr()
     {
        return implode('/', self::getArr());
     } 
-
-
 
     public function getController()
     {
         return $this->controller;
     } 
 
-
-
     public function getAction()
     {
         return $this->action;
     } 
-
-
 
     public function getParam($num)
     { 
@@ -104,16 +80,12 @@ class CoreUri implements IUri
         return (!$isParam) ? null: $this->param[$num];
     } 
 
-
-
     public function getParamArr()
     {
         $isParam = (count($this->param) > 0);
 
         return (!$isParam) ? array(): $this->param;
     } 
-
-
 
     public function getNamespaceAndController()
     {
@@ -127,7 +99,6 @@ class CoreUri implements IUri
 
         return implode('\\', $namespace);
     } 
-
 
 }
 
