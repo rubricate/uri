@@ -72,7 +72,7 @@ class RouterUri implements IGetStrUri
         $s = $_SERVER['QUERY_STRING'] ;
         $u = (is_null($q)) ? $s: $q;
 
-        $this->uri = (!empty($u))? $u: '/';
+        $this->uri = (!empty($u))? $u: 'index/index';
         $this->routes = $rt;
     }
 
