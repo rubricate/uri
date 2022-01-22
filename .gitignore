@@ -1,4 +1,5 @@
 *.vim
 *.lab.*
+tags
 vendor/
 
