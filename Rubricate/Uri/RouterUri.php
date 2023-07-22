@@ -17,11 +17,8 @@ class RouterUri implements IGetStrUri
         self::setRouteAndQrStr($rt, $qr);
 
         foreach ($this->routes as $urik => $uriv) {
-
             $pattern = preg_replace('(\{[a-z0-9]{1,}\})', '([a-z0-9-]{1,})', $urik);
-
             if(preg_match(sprintf('#^(%s)*$#i', $pattern), $this->uri, $matches) === 1){
-                array_shift($matches);
                 array_shift($matches);
 
                 $item = [];
