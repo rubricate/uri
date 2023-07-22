@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "php": "^7.1",
         "rubricate/filter": "^0.1"
     },
     "keywords": [
