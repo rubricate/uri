@@ -23,7 +23,9 @@ class CoreUri implements IUri
 
     private function setRoute($r)
     {
-        $q = $_SERVER['QUERY_STRING'] ;
+        $q = (!array_key_exists('QUERY_STRING', $_SERVER))
+            ? ltrim($_SERVER['REQUEST_URI'], '/'): $_SERVER['QUERY_STRING'] ;
+
         $router = new RouterUri($r, $q);
 
         $this->q = $router->getStr();

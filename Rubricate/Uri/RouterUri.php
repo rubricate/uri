@@ -51,7 +51,9 @@ class RouterUri implements IGetStrUri
     private function setRouteAndQrStr($rt, $qr)
     {
         $q = $qr;
-        $s = $_SERVER['QUERY_STRING'] ;
+        $s = (!array_key_exists('QUERY_STRING', $_SERVER))
+            ? ltrim($_SERVER['REQUEST_URI'], '/'): $_SERVER['QUERY_STRING'] ;
+
         $u = (is_null($q)) ? $s: $q;
 
         $this->uri = (!empty($u))? $u: 'index/index';
