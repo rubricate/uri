@@ -10,8 +10,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "rubricate/filter": "^1.0"
+        "php": ">=7.2",
+        "rubricate/filter": "^2.2"
     },
     "keywords": [
         "rubricateframework",
