@@ -1,5 +1,7 @@
 <?php 
 
+declare(strict_types=1);
+
 namespace Rubricate\Uri;
 
 use Rubricate\Filter\Preserve\AlnumUnderscoreHyphenPreserveFilter;
@@ -10,8 +12,8 @@ class CoreUri implements IUri
     private $str;
     private $controller;
     private $action;
-    private $param     = array();
-    private $initParam = array('Index', 'index');
+    private $param = [];
+    private $initParam = ['Index', 'index'];
 
     public function __construct($routes = [])
     {
@@ -21,7 +23,7 @@ class CoreUri implements IUri
         self::init();
     }
 
-    private function setRoute($r)
+    private function setRoute($r): void
     {
         $q = (!array_key_exists('QUERY_STRING', $_SERVER))
             ? ltrim($_SERVER['REQUEST_URI'], '/'): $_SERVER['QUERY_STRING'] ;
@@ -31,7 +33,7 @@ class CoreUri implements IUri
         $this->q = $router->getStr();
     } 
 
-    private function init()
+    private function init(): void
     {
         $uri        = self::getArr();
         $isAction   = (array_key_exists(1, $uri));
@@ -46,13 +48,13 @@ class CoreUri implements IUri
         $this->param = $uri;
     } 
 
-    private function getFilter($value) 
+    private function getFilter($value): string
     {
         $value = str_replace('-', '_', $value);
         return $this->alnumPreserve->getFilter($value);
     }
 
-    public function getArr()
+    public function getArr(): string
     {
         $i = ( !empty($this->q) );
         $p = $this->initParam;
@@ -65,33 +67,29 @@ class CoreUri implements IUri
        return implode('/', self::getArr());
     } 
 
-    public function getController()
+    public function getController(): string
     {
         return $this->controller;
     } 
 
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     } 
 
-    public function getParam($num)
+    public function getParam($num): ?string
     { 
-        $isParam = (array_key_exists($num, $this->param));
-
-        return (!$isParam) ? null: $this->param[$num];
+        return $this->param[$num] ?? null;
     } 
 
-    public function getParamArr()
+    public function getParamArr(): array
     {
-        $isParam = (count($this->param) > 0);
-
-        return (!$isParam) ? array(): $this->param;
+        return $this->param ?? [];
     } 
 
-    public function getNamespaceAndController()
+    public function getNamespaceAndController(): string
     {
-        $namespace     = array();
+        $namespace     = [];
         $controllerArr = explode('_', self::getController());
 
         foreach ($controllerArr as $ns) {

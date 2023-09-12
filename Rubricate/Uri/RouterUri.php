@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubricate\Uri;
 
 class RouterUri implements IGetStrUri
@@ -12,7 +14,7 @@ class RouterUri implements IGetStrUri
         self::init($routes, $queryString);
     }
 
-    public function init($rt, $qr)
+    public function init($rt, $qr): void
     {
         self::setRouteAndQrStr($rt, $qr);
 
@@ -43,20 +45,20 @@ class RouterUri implements IGetStrUri
         }
     }
 
-    public function getStr()
+    public function getStr(): void
     {
         return $this->uri;
     }
 
-    private function setRouteAndQrStr($rt, $qr)
+    private function setRouteAndQrStr($rt, $qr): void
     {
         $q = $qr;
         $s = (!array_key_exists('QUERY_STRING', $_SERVER))
             ? ltrim($_SERVER['REQUEST_URI'], '/'): $_SERVER['QUERY_STRING'] ;
 
-        $u = (is_null($q)) ? $s: $q;
+        $u = $q ?? $s;
 
-        $this->uri = (!empty($u))? $u: 'index/index';
+        $this->uri = $u ?? 'index/index';
         $this->routes = $rt;
     }
 }    
