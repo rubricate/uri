@@ -54,7 +54,7 @@ class CoreUri implements IUri
         return $this->alnumPreserve->getFilter($value);
     }
 
-    public function getArr(): string
+    public function getArr(): array
     {
         $i = ( !empty($this->q) );
         $p = $this->initParam;

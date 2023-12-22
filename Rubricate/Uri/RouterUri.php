@@ -45,7 +45,7 @@ class RouterUri implements IGetStrUri
         }
     }
 
-    public function getStr(): void
+    public function getStr(): ?string
     {
         return $this->uri;
     }
