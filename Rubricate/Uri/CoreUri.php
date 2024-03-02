@@ -44,7 +44,7 @@ class CoreUri implements IUri
         $this->controller = self::getfilter($controller);
 
         unset($uri[0], $uri[1]);
-
+        $uri = [...$uri];
         $this->param = $uri;
     } 
 
