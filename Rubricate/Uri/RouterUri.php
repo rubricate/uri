@@ -6,41 +6,37 @@ namespace Rubricate\Uri;
 
 class RouterUri implements IGetStrUri
 {
-    private $routes = [];
-    private $uri;
+    private array $routes = [];
+    private ?string $uri  = null;
 
-    public function __construct($routes = [], $queryString = null)
-    {
+    public function __construct(
+        array $routes = [],
+        ?string $queryString = null
+    ){
         self::init($routes, $queryString);
     }
 
-    public function init($rt, $qr): void
+    private function init(array $routes, ?string $queryString): void
     {
-        self::setRouteAndQrStr($rt, $qr);
+        $this->setRouteAndQueryStr($routes, $queryString);
 
-        foreach ($this->routes as $urik => $uriv) {
-            $pattern = preg_replace('(\{[a-z0-9]{1,}\})', '([a-z0-9-]{1,})', $urik);
-            if(preg_match(sprintf('#^(%s)*$#i', $pattern), $this->uri, $matches) === 1){
+        foreach ($this->routes as $uriKey => $uriValue) {
+            $pattern = preg_replace('/\{[a-z0-9]+\}/i', '([a-z0-9-]+)', $uriKey);
+
+            if (preg_match(sprintf('#^%s$#i', $pattern), $this->uri, $matches) === 1) {
                 array_shift($matches);
 
-                $item = [];
+                if (preg_match_all('/\{[a-z0-9]+\}/i', $uriKey, $keys)) {
+                    $keys = array_map(fn($key) => trim($key, '{}'), $keys[0]);
+                    $args = array_combine($keys, $matches) ?: [];
 
-                if(preg_match_all('(\{[a-z0-9]{1,}\})', $urik, $m)){
-                    $item = preg_replace('(\{|\})', '', $m[0]);
-
-                    $arg = [];
-                    foreach ($matches as $key => $match) {
-                        $arg[$item[$key]] = $match;
-                    }
-
-                    foreach ($arg as $ak => $av) {
-                        $uriv = str_replace(':' . $ak, $av, $uriv);
+                    foreach ($args as $key => $value) {
+                        $uriValue = str_replace(":{$key}", $value, $uriValue);
                     }
                 }
 
-                $this->uri = $uriv;
+                $this->uri = $uriValue;
                 break;
-
             }
         }
     }
@@ -50,16 +46,11 @@ class RouterUri implements IGetStrUri
         return $this->uri;
     }
 
-    private function setRouteAndQrStr($rt, $qr): void
+    private function setRouteAndQueryStr(array $routes, ?string $queryString): void
     {
-        $q = $qr;
-        $s = (!array_key_exists('QUERY_STRING', $_SERVER))
-            ? ltrim($_SERVER['REQUEST_URI'], '/'): $_SERVER['QUERY_STRING'] ;
-
-        $u = $q ?? $s;
-
-        $this->uri = $u ?? 'index/index';
-        $this->routes = $rt;
+        $serverQuery = $_SERVER['QUERY_STRING'] ?? ltrim($_SERVER['REQUEST_URI'], '/');
+        $this->uri = $queryString ?? $serverQuery ?? 'index/index';
+        $this->routes = $routes;
     }
 }    
 

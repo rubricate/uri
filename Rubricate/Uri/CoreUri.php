@@ -8,14 +8,14 @@ use Rubricate\Filter\Preserve\AlnumUnderscoreHyphenPreserveFilter;
 
 class CoreUri implements IUri
 {
-    private $alnumPreserve;
-    private $str;
-    private $controller;
-    private $action;
-    private $param = [];
-    private $initParam = ['Index', 'index'];
+    private AlnumUnderscoreHyphenPreserveFilter $alnumPreserve;
+    private string $q = '';
+    private string $controller = '';
+    private string $action = '';
+    private array $param = [];
+    private array $initParam = ['Index', 'index'];
 
-    public function __construct($routes = [])
+    public function __construct(array $routes = [])
     {
         $this->alnumPreserve = new AlnumUnderscoreHyphenPreserveFilter();
 
@@ -23,29 +23,23 @@ class CoreUri implements IUri
         self::init();
     }
 
-    private function setRoute($r): void
+    private function setRoute(array $routes): void
     {
-        $q = (!array_key_exists('QUERY_STRING', $_SERVER))
-            ? ltrim($_SERVER['REQUEST_URI'], '/'): $_SERVER['QUERY_STRING'] ;
-
-        $router = new RouterUri($r, $q);
-
+        $qStr    = $_SERVER['QUERY_STRING'] ?? ltrim($_SERVER['REQUEST_URI'], '/');
+        $router  = new RouterUri($routes, $qStr);
         $this->q = $router->getStr();
     } 
 
     private function init(): void
     {
-        $uri        = self::getArr();
-        $isAction   = (array_key_exists(1, $uri));
-        $controller = ucfirst($uri[0]);
-        $action     = (!$isAction)? $this->initParam[1]: lcfirst($uri[1]);
+        $uri = $this->getArr();
+        $controller = ucfirst($uri[0] ?? $this->initParam[0]);
+        $action = lcfirst($uri[1] ?? $this->initParam[1]);
 
-        $this->action     = self::getFilter($action);
-        $this->controller = self::getfilter($controller);
+        $this->controller = $this->getFilter($controller);
+        $this->action = $this->getFilter($action);
 
-        unset($uri[0], $uri[1]);
-        $uri = [...$uri];
-        $this->param = $uri;
+        $this->param = array_slice($uri, 2);
     } 
 
     private function getFilter($value): string
@@ -56,13 +50,14 @@ class CoreUri implements IUri
 
     public function getArr(): array
     {
-        $i = ( !empty($this->q) );
-        $p = $this->initParam;
+        if (empty($this->q)) {
+            return $this->initParam;
+        }
 
-        return (!$i)? $p: explode('/', trim($this->q, '/'));
+        return explode('/', trim($this->q, '/'));
     } 
 
-    public function getStr()
+    public function getStr(): ?string
     {
        return implode('/', self::getArr());
     } 
@@ -84,18 +79,13 @@ class CoreUri implements IUri
 
     public function getParamArr(): array
     {
-        return $this->param ?? [];
+        return $this->param;
     } 
 
     public function getNamespaceAndController(): string
     {
-        $namespace     = [];
-        $controllerArr = explode('_', self::getController());
-
-        foreach ($controllerArr as $ns) {
-
-            $namespace[] = ucfirst($ns);
-        }
+        $c = explode('_', $this->getController());
+        $namespace = array_map(fn($p) => ucfirst($p), $c);
 
         return implode('\\', $namespace);
     } 

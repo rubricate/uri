@@ -4,6 +4,6 @@ namespace Rubricate\Uri;
 
 interface IGetActionUri
 {
-    public function getAction();
+    public function getAction(): string;
 }
 

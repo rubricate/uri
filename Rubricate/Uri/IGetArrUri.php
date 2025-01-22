@@ -4,6 +4,6 @@ namespace Rubricate\Uri;
 
 interface IGetArrUri
 {
-    public function getArr();
+    public function getArr(): array;
 }
 

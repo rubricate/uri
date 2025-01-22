@@ -4,6 +4,6 @@ namespace Rubricate\Uri;
 
 interface IGetParamUri
 {
-    public function getParam($num);
+    public function getParam($num): ?string;
 }
 

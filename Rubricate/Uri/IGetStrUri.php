@@ -4,6 +4,6 @@ namespace Rubricate\Uri;
 
 interface IGetStrUri
 {
-    public function getStr();
+    public function getStr(): ?string;
 }
 

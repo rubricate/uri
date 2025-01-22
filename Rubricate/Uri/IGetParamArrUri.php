@@ -4,6 +4,6 @@ namespace Rubricate\Uri;
 
 interface IGetParamArrUri
 {
-    public function getParamArr();
+    public function getParamArr(): array;
 }
 

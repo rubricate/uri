@@ -4,6 +4,6 @@ namespace Rubricate\Uri;
 
 interface IGetControllerUri
 {
-    public function getController();
+    public function getController(): string;
 }
 
