@@ -6,19 +6,17 @@ namespace Rubricate\Uri;
 
 class RouterUri implements IGetStrUri
 {
-    private array $routes = [];
-    private ?string $uri  = null;
+    private readonly array $routes;
+    private ?string $uri = null;
 
-    public function __construct(
-        array $routes = [],
-        ?string $queryString = null
-    ){
-        self::init($routes, $queryString);
-    }
-
-    private function init(array $routes, ?string $queryString): void
+    public function __construct(array $routes = [], ?string $queryString = null)
     {
-        $this->setRouteAndQueryStr($routes, $queryString);
+        $this->routes = $routes;
+
+        $serverQuery = $_SERVER['QUERY_STRING'] ?? ltrim($_SERVER['REQUEST_URI'], '/');
+        $resolvedUri = $queryString ?? $serverQuery;
+
+        $this->uri = (!is_null($resolvedUri) && $resolvedUri !== '') ? $resolvedUri : 'index/index';
 
         foreach ($this->routes as $uriKey => $uriValue) {
             $pattern = preg_replace('/\{[a-z0-9]+\}/i', '([a-z0-9-]+)', $uriKey);
@@ -45,12 +43,5 @@ class RouterUri implements IGetStrUri
     {
         return $this->uri;
     }
-
-    private function setRouteAndQueryStr(array $routes, ?string $queryString): void
-    {
-        $serverQuery = $_SERVER['QUERY_STRING'] ?? ltrim($_SERVER['REQUEST_URI'], '/');
-        $this->uri = $queryString ?? $serverQuery ?? 'index/index';
-        $this->routes = $routes;
-    }
-}    
+}
 
