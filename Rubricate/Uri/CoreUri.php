@@ -8,12 +8,13 @@ use Rubricate\Filter\Preserve\AlnumDashFilter;
 
 class CoreUri implements IUri
 {
+    private const INIT_PARAM = ['Index', 'index'];
+
     private readonly AlnumDashFilter $alnumFilter;
     private readonly string $q;
     private readonly string $controller;
     private readonly string $action;
     private readonly array $param;
-    private readonly array $initParam = ['Index', 'index'];
 
     public function __construct(array $routes = [])
     {
@@ -24,8 +25,8 @@ class CoreUri implements IUri
         $this->q = $router->getStr() ?? '';
 
         $uri = $this->getArr();
-        $rawController = ucfirst($uri[0] ?? $this->initParam[0]);
-        $rawAction = lcfirst($uri[1] ?? $this->initParam[1]);
+        $rawController = ucfirst($uri[0] ?? self::INIT_PARAM[0]);
+        $rawAction = lcfirst($uri[1] ?? self::INIT_PARAM[1]);
 
         $this->controller = $this->getFilter($rawController);
         $this->action = $this->getFilter($rawAction);
@@ -41,7 +42,7 @@ class CoreUri implements IUri
     public function getArr(): array
     {
         if (empty($this->q)) {
-            return $this->initParam;
+            return self::INIT_PARAM;
         }
 
         return explode('/', trim($this->q, '/'));
