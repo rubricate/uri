@@ -1,51 +1,41 @@
-<?php 
+<?php
 
 declare(strict_types=1);
 
 namespace Rubricate\Uri;
 
-use Rubricate\Filter\Preserve\AlnumUnderscoreHyphenPreserveFilter;
+use Rubricate\Filter\Preserve\AlnumDashFilter;
 
 class CoreUri implements IUri
 {
-    private AlnumUnderscoreHyphenPreserveFilter $alnumPreserve;
-    private string $q = '';
-    private string $controller = '';
-    private string $action = '';
-    private array $param = [];
-    private array $initParam = ['Index', 'index'];
+    private readonly AlnumDashFilter $alnumFilter;
+    private readonly string $q;
+    private readonly string $controller;
+    private readonly string $action;
+    private readonly array $param;
+    private readonly array $initParam = ['Index', 'index'];
 
     public function __construct(array $routes = [])
     {
-        $this->alnumPreserve = new AlnumUnderscoreHyphenPreserveFilter();
+        $this->alnumFilter = new AlnumDashFilter();
 
-        self::setRoute($routes);
-        self::init();
-    }
+        $qStr = $_SERVER['QUERY_STRING'] ?? ltrim($_SERVER['REQUEST_URI'], '/');
+        $router = new RouterUri($routes, $qStr);
+        $this->q = $router->getStr() ?? '';
 
-    private function setRoute(array $routes): void
-    {
-        $qStr    = $_SERVER['QUERY_STRING'] ?? ltrim($_SERVER['REQUEST_URI'], '/');
-        $router  = new RouterUri($routes, $qStr);
-        $this->q = $router->getStr();
-    } 
-
-    private function init(): void
-    {
         $uri = $this->getArr();
-        $controller = ucfirst($uri[0] ?? $this->initParam[0]);
-        $action = lcfirst($uri[1] ?? $this->initParam[1]);
+        $rawController = ucfirst($uri[0] ?? $this->initParam[0]);
+        $rawAction = lcfirst($uri[1] ?? $this->initParam[1]);
 
-        $this->controller = $this->getFilter($controller);
-        $this->action = $this->getFilter($action);
-
+        $this->controller = $this->getFilter($rawController);
+        $this->action = $this->getFilter($rawAction);
         $this->param = array_slice($uri, 2);
     } 
 
-    private function getFilter($value): string
+    private function getFilter(string $value): string
     {
         $value = str_replace('-', '_', $value);
-        return $this->alnumPreserve->getFilter($value);
+        return $this->alnumFilter->getFilter($value);
     }
 
     public function getArr(): array
@@ -59,7 +49,7 @@ class CoreUri implements IUri
 
     public function getStr(): ?string
     {
-       return implode('/', self::getArr());
+       return implode('/', $this->getArr());
     } 
 
     public function getController(): string
@@ -72,7 +62,7 @@ class CoreUri implements IUri
         return $this->action;
     } 
 
-    public function getParam($num): ?string
+    public function getParam(int $num): ?string
     { 
         return $this->param[$num] ?? null;
     } 
@@ -89,6 +79,4 @@ class CoreUri implements IUri
 
         return implode('\\', $namespace);
     } 
-
 }
-
