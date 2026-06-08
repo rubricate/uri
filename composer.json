@@ -1,7 +1,7 @@
 {
-
     "name": "rubricate/uri",
-    "description": "Assists in retrieving information from a friendly URL URI strings",
+    "description": "A lightweight and expressive URI parser and router component with regex placeholder support for modern MVC architectures.",
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
@@ -10,23 +10,32 @@
         }
     ],
     "require": {
-        "php": ">=8.0",
-        "rubricate/filter": "^3.0"
+        "php": ">=8.2",
+        "rubricate/filter": "^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "phpstan/phpstan": "^1.10"
     },
     "keywords": [
-        "rubricateframework",
-        "rubricatephp",
-        "uri",
-        "router"
+        "uri", "router", "mvc", "url-parser", "placeholders", "rubricate"
     ],
     "support": {
-        "docs"   : "https://rubricate.github.io/components/uri",
-        "source" : "https://github.com/rubricate/uri"
+        "docs": "https://rubricate.github.io/components/uri",
+        "source": "https://github.com/rubricate/uri",
+        "issues": "https://github.com/rubricate/uri/issues"
     },
     "autoload": {
         "psr-4": {
             "Rubricate\\Uri\\": "Rubricate/Uri/"
         }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "platform": {
+            "php": "8.2"
+        }
     }
-
 }
+
